@@ -27,6 +27,7 @@ import { withTranslation } from 'react-i18next';
 import { mapNameToLanguage, setLanguage } from '../../i18n/i18n';
 import { Monitoring } from '../../components/Monitoring';
 import { MonitoringData } from '../../shared/MonitoringData';
+import { init as initSlowLink, add as addSlowLink, getStatus as getSlowLinkStatus } from './SlowLinkPull';
 
 class OldClient extends Component {
 
@@ -100,6 +101,8 @@ class OldClient extends Component {
       localStorage.setItem('question', false);
       localStorage.setItem('sound_test', false);
       localStorage.setItem('uuid', user.id);
+
+      initSlowLink(user.id);
       checkNotification();
       let system  = navigator.userAgent;
       let browser = platform.parse(system);
@@ -451,6 +454,7 @@ class OldClient extends Component {
         Janus.log('Janus says our WebRTC PeerConnection is ' + (on ? 'up' : 'down') + ' now');
       },
       slowLink: (uplink, lost, mid) => {
+        addSlowLink(lost, mid);
         Janus.log('Janus reports problems ' + (uplink ? 'sending' : 'receiving') +
           ' packets on mid ' + mid + ' (' + lost + ' lost packets)');
       },
